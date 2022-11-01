@@ -7,19 +7,20 @@ const initialState = {
 
 const handleDeleteComment = createAsyncThunk(
   "delete-comment",
-  (arg, { getsState }) => {
-    const state= getState()
+  (arg, { getState }) => {
+    const state = getState();
     // fetch instead of console.log
-    try{
-    const res = fetch("/", {
-      method: "DELETE",
-      body: JSON.stringify({
-        commentId: state.currentCommentId,
-      }),
-    }); throw new Error("Something went wrong")
-    if(!res.ok)
-  } catch(err){
-    console.log(err)
+    try {
+      const res = fetch("/", {
+        method: "DELETE",
+        body: JSON.stringify({
+          commentId: state.currentCommentId,
+        }),
+      });
+      if (!res.ok) throw new Error("Something went wrong");
+    } catch (err) {
+      return console.log.error(err);
+    }
   }
 );
 
@@ -36,11 +37,10 @@ const modalSlice = createSlice({
     },
   },
   extraReducers: (build) => {
-    build.addCase(
-        handleDeleteComment.pending,
-        (state,action) => {}
-    )
-  }
+    build.addCase(handleDeleteComment.pending, (state, action) => {});
+    build.addCase(handleDeleteComment.fulfilled, (state, action) => {});
+    build.addCase(handleDeleteComment.rejected, (state, action) => {});
+  },
 });
 
 export const { handleModalOpen, handleModalClosed } = modalSlice.actions;
